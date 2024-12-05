@@ -21,7 +21,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
     });
 
     const { title, amount, type } = createTransactionBodySchema.parse(
-      request.body
+      request.body //Estou colocando aqui para enviar no meu body
     );
 
     let sessionId = request.cookies.sessionId; //Aqui estou buscando os valores dos cookies por meio da nossa req, após ter baixado a lib. E criamos o valor sessionId
@@ -30,7 +30,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
 
       reply.cookie("sessionId", sessionId, {
         path: "/", // E nossos cookies vão ser para todas as rotas de transactions
-        maxAge: 60 * 60 * 24 * 7, // 7 dias a duração do cookie das informações do usuário. Esta em segundos
+        maxAge: 60 * 60 * 24 * 7, // 7 dias a duração do cookie das informações de sessionId do usuário. Esta em segundos
       });
     }
 
@@ -53,7 +53,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
         id: z.string().uuid(), // O ID precisa ser um UUID válido
       });
 
-      const { id } = deleteTransactionParamsSchema.parse(request.params);
+      const { id } = deleteTransactionParamsSchema.parse(request.params); //Ao inves de req.body coloco params
 
       const deletedRows = await knex("transactions").del();
 
@@ -79,7 +79,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
 
       const transactions = await knex("transactions")
         .select()
-        .where("session_id", sessionId);
+        .where("session_id", sessionId); //Para vir o contexto daquele usuário
 
       return transactions; //VocÊ pode enviar dessa forma ou assim { transactions }, e assi é enviado em forma de objeto melhor pro frontend
       // reply.status(200).send("Your get has been sucessfully called");
